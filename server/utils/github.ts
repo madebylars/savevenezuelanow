@@ -28,34 +28,70 @@ export function ghCfgFromRuntime(config: { githubToken: string; githubRepo: stri
 }
 
 export async function getGithubFile(cfg: GitHubCfg, filePath: string): Promise<{ content: string; sha: string }> {
-  const res = await $fetch<{ content: string; sha: string }>(ghUrl(cfg.repo, filePath), {
-    headers: ghReadHeaders(cfg.token)
-  })
-  return { content: atob(res.content.replace(/\s/g, '')), sha: res.sha }
+  try {
+    const res = await $fetch<{ content: string; sha: string }>(ghUrl(cfg.repo, filePath), {
+      headers: ghReadHeaders(cfg.token)
+    })
+    return { content: atob(res.content.replace(/\s/g, '')), sha: res.sha }
+  } catch (error: unknown) {
+    const e = error as { data?: unknown; message?: string; status?: number; statusCode?: number }
+    console.error('GitHub getGithubFile error:', JSON.stringify(e?.data ?? e?.message ?? error))
+    throw createError({
+      statusCode: e?.status ?? e?.statusCode ?? 500,
+      statusMessage: JSON.stringify(e?.data ?? e?.message ?? 'GitHub API error')
+    })
+  }
 }
 
 export async function createGithubFile(cfg: GitHubCfg, filePath: string, content: string, message: string): Promise<void> {
   const encoded = btoa(unescape(encodeURIComponent(content)))
-  await $fetch(ghUrl(cfg.repo, filePath), {
-    method: 'PUT',
-    headers: ghWriteHeaders(cfg.token),
-    body: JSON.stringify({ message, content: encoded, branch: cfg.branch })
-  })
+  try {
+    await $fetch(ghUrl(cfg.repo, filePath), {
+      method: 'PUT',
+      headers: ghWriteHeaders(cfg.token),
+      body: JSON.stringify({ message, content: encoded, branch: cfg.branch })
+    })
+  } catch (error: unknown) {
+    const e = error as { data?: unknown; message?: string; status?: number; statusCode?: number }
+    console.error('GitHub createGithubFile error:', JSON.stringify(e?.data ?? e?.message ?? error))
+    throw createError({
+      statusCode: e?.status ?? e?.statusCode ?? 500,
+      statusMessage: JSON.stringify(e?.data ?? e?.message ?? 'GitHub API error')
+    })
+  }
 }
 
 export async function updateGithubFile(cfg: GitHubCfg, filePath: string, content: string, sha: string, message: string): Promise<void> {
   const encoded = btoa(unescape(encodeURIComponent(content)))
-  await $fetch(ghUrl(cfg.repo, filePath), {
-    method: 'PUT',
-    headers: ghWriteHeaders(cfg.token),
-    body: JSON.stringify({ message, content: encoded, sha, branch: cfg.branch })
-  })
+  try {
+    await $fetch(ghUrl(cfg.repo, filePath), {
+      method: 'PUT',
+      headers: ghWriteHeaders(cfg.token),
+      body: JSON.stringify({ message, content: encoded, sha, branch: cfg.branch })
+    })
+  } catch (error: unknown) {
+    const e = error as { data?: unknown; message?: string; status?: number; statusCode?: number }
+    console.error('GitHub updateGithubFile error:', JSON.stringify(e?.data ?? e?.message ?? error))
+    throw createError({
+      statusCode: e?.status ?? e?.statusCode ?? 500,
+      statusMessage: JSON.stringify(e?.data ?? e?.message ?? 'GitHub API error')
+    })
+  }
 }
 
 export async function deleteGithubFile(cfg: GitHubCfg, filePath: string, sha: string, message: string): Promise<void> {
-  await $fetch(ghUrl(cfg.repo, filePath), {
-    method: 'DELETE',
-    headers: ghWriteHeaders(cfg.token),
-    body: JSON.stringify({ message, sha, branch: cfg.branch })
-  })
+  try {
+    await $fetch(ghUrl(cfg.repo, filePath), {
+      method: 'DELETE',
+      headers: ghWriteHeaders(cfg.token),
+      body: JSON.stringify({ message, sha, branch: cfg.branch })
+    })
+  } catch (error: unknown) {
+    const e = error as { data?: unknown; message?: string; status?: number; statusCode?: number }
+    console.error('GitHub deleteGithubFile error:', JSON.stringify(e?.data ?? e?.message ?? error))
+    throw createError({
+      statusCode: e?.status ?? e?.statusCode ?? 500,
+      statusMessage: JSON.stringify(e?.data ?? e?.message ?? 'GitHub API error')
+    })
+  }
 }
