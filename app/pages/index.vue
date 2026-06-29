@@ -1,5 +1,41 @@
 <script setup lang="ts">
-const { t } = useLang()
+const { t, lang } = useLang()
+
+const { data: latestUpdate } = await useAsyncData('latest-update', () =>
+  queryCollection('updates')
+    .where('published', '=', true)
+    .order('date', 'DESC')
+    .limit(1)
+    .first()
+)
+
+const latestExcerpt = computed(() => {
+  const raw = lang.value === 'es'
+    ? (latestUpdate.value as Record<string, unknown>)?.content_es as string
+    : (latestUpdate.value as Record<string, unknown>)?.content_en as string
+  return raw?.replace(/<[^>]*>/g, '').slice(0, 200) + '...' ?? ''
+})
+
+const latestTitle = computed(() => {
+  if (!latestUpdate.value) return ''
+  return lang.value === 'es'
+    ? (latestUpdate.value as Record<string, unknown>).title_es as string || latestUpdate.value.title
+    : latestUpdate.value.title
+})
+
+const latestSlug = computed(() =>
+  (latestUpdate.value as Record<string, unknown>)?.slug as string
+    ?? latestUpdate.value?.path?.split('/').pop()
+    ?? ''
+)
+
+const latestDate = computed(() => {
+  if (!latestUpdate.value?.date) return ''
+  const d = new Date(latestUpdate.value.date + 'T12:00:00')
+  return lang.value === 'es'
+    ? d.toLocaleDateString('es', { month: 'long', day: 'numeric' })
+    : d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+})
 
 useHead({
   title: 'Save Venezuela Now — Earthquake Relief',
@@ -102,6 +138,32 @@ const diasporaCountries = computed(() => [
           'El principal aeropuerto internacional de Venezuela fue cerrado tras encontrarse daños estructurales en el techo de la terminal. Las escuelas cerraron. Los hospitales — ya escasos de equipos y personal — fueron desbordados por pacientes traumatizados. Se espera que el número de muertos aumente significativamente.'
         ) }}
       </p>
+    </div>
+  </section>
+
+  <!-- Latest Update -->
+  <section v-if="latestUpdate" class="py-16 px-8 bg-white">
+    <div class="max-w-[860px] mx-auto">
+      <div class="border-l-[3px] border-primary bg-paper px-8 py-7">
+        <div class="flex items-baseline justify-between mb-5">
+          <div class="text-[0.68rem] tracking-[0.14em] uppercase text-muted flex items-center gap-[0.6rem] before:block before:w-6 before:h-px before:bg-muted">
+            {{ t('Latest update', 'Última actualización') }}
+          </div>
+          <span class="text-[0.78rem] text-muted">{{ latestDate }}</span>
+        </div>
+        <h2 class="font-serif text-[clamp(1.3rem,3vw,1.8rem)] leading-tight mb-3 text-ink">
+          {{ latestTitle }}
+        </h2>
+        <p class="text-[0.95rem] text-ink-light leading-[1.75] mb-5 max-w-165">
+          {{ latestExcerpt }}
+        </p>
+        <NuxtLink
+          :to="`/updates/${latestSlug}`"
+          class="inline-flex items-center gap-[0.4rem] text-primary text-[0.9rem] font-semibold no-underline hover:gap-[0.7rem] transition-all"
+        >
+          {{ t('Read full update', 'Leer actualización completa') }} →
+        </NuxtLink>
+      </div>
     </div>
   </section>
 
