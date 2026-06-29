@@ -24,8 +24,8 @@ const latestTitle = computed(() => {
 })
 
 const latestSlug = computed(() =>
-  (latestUpdate.value as Record<string, unknown>)?.slug as string
-    ?? latestUpdate.value?.path?.split('/').pop()
+  latestUpdate.value?.path?.split('/').pop()
+    ?? (latestUpdate.value as Record<string, unknown>)?.slug as string
     ?? ''
 )
 

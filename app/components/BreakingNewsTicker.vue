@@ -4,7 +4,7 @@ const { lang } = useLang()
 
 const isAdmin = computed(() => route.path.startsWith('/admin'))
 
-const { data: latestUpdate } = await useAsyncData('ticker-update', () =>
+const { data: latestUpdate } = await useAsyncData('latest-update', () =>
   queryCollection('updates')
     .where('published', '=', true)
     .order('date', 'DESC')
@@ -20,8 +20,8 @@ const headline = computed(() => {
 })
 
 const updateSlug = computed(() =>
-  (latestUpdate.value as Record<string, unknown>)?.slug as string
-    ?? latestUpdate.value?.path?.split('/').pop()
+  latestUpdate.value?.path?.split('/').pop()
+    ?? (latestUpdate.value as Record<string, unknown>)?.slug as string
     ?? ''
 )
 
