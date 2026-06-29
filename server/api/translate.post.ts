@@ -21,21 +21,30 @@ Translate the following from English to Venezuelan Spanish. Rules:
 Title to translate: ${title}
 Content to translate: ${content}`
 
-  const res = await $fetch<{
-    content: Array<{ type: string; text: string }>
-  }>('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': anthropicApiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      messages: [{ role: 'user', content: prompt }]
+  let res: { content: Array<{ type: string; text: string }> }
+  try {
+    res = await $fetch<{ content: Array<{ type: string; text: string }> }>('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': anthropicApiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'User-Agent': 'savevenezuelanow/1.0'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 4096,
+        messages: [{ role: 'user', content: prompt }]
+      })
     })
-  })
+  } catch (error: unknown) {
+    const e = error as { data?: unknown; message?: string; status?: number; statusCode?: number }
+    console.error('Anthropic API error:', JSON.stringify(e?.data ?? e?.message ?? error))
+    throw createError({
+      statusCode: e?.status ?? e?.statusCode ?? 500,
+      statusMessage: `Anthropic error: ${JSON.stringify(e?.data ?? e?.message ?? 'unknown')}`
+    })
+  }
 
   const raw = (res.content[0]?.text ?? '{}').trim()
   const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
@@ -47,6 +56,7 @@ Content to translate: ${content}`
       content_es: parsed.content_es ?? ''
     }
   } catch {
+    console.error('Failed to parse Anthropic response:', clean)
     throw createError({ statusCode: 500, statusMessage: 'Failed to parse translation response' })
   }
 })
