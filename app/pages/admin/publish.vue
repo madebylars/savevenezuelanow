@@ -84,14 +84,6 @@ async function publish() {
   }
 }
 
-// ── X char count ─────────────────────────────────────────────────────────────
-
-const xCharCount = computed(() => form.x_text.length)
-const xCharClass = computed(() => {
-  if (xCharCount.value >= 270) return 'text-primary'
-  if (xCharCount.value >= 240) return 'text-accent'
-  return 'text-white/40'
-})
 </script>
 
 <template>
@@ -233,15 +225,11 @@ const xCharClass = computed(() => {
       <!-- Social text fields -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">
-            X post text
-            <span :class="['ml-2 font-mono', xCharClass]">{{ xCharCount }}/280</span>
-          </label>
+          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">X post text</label>
           <textarea
             v-model="form.x_text"
             rows="4"
-            maxlength="280"
-            placeholder="Short post for X (280 chars max)"
+            placeholder="Text for X post"
             class="w-full bg-white/10 border border-white/20 text-white placeholder-white/25 px-4 py-3 text-sm outline-none focus:border-accent transition-colors resize-none"
           />
         </div>
