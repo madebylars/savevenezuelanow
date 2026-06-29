@@ -29,13 +29,15 @@ export default defineEventHandler(async (event) => {
   const cfg = ghCfgFromRuntime(config)
   const filePath = `content/updates/${stem}.md`
 
-  const tokenPreview = cfg.token ? `${cfg.token.slice(0, 8)}… (len ${cfg.token.length})` : 'MISSING'
   const { sha } = await getGithubFile(cfg, filePath).catch((e: unknown) => {
     const status = (e as { status?: number; statusCode?: number }).status
       ?? (e as { status?: number; statusCode?: number }).statusCode
       ?? 0
-    const ghMsg = (e as { data?: { message?: string } }).data?.message ?? 'no detail'
-    throw createError({ statusCode: 500, statusMessage: `GitHub ${status} — token: ${tokenPreview} — ${ghMsg} — path: ${filePath}` })
+    const ghMsg = (e as { data?: { message?: string } }).data?.message ?? ''
+    if (status === 401 || status === 403) {
+      throw createError({ statusCode: 500, statusMessage: `GitHub auth error (${status})${ghMsg ? ': ' + ghMsg : ''} — check NUXT_GITHUB_TOKEN in Cloudflare` })
+    }
+    throw createError({ statusCode: 404, statusMessage: `File not found on GitHub: ${filePath}` })
   })
 
   const markdown = `---

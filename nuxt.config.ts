@@ -12,17 +12,17 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()]
   },
   runtimeConfig: {
-    adminPassword: process.env.ADMIN_PASSWORD,
-    githubToken: process.env.GITHUB_TOKEN,
-    githubRepo: process.env.GITHUB_REPO,
-    githubBranch: process.env.GITHUB_BRANCH ?? 'main',
-    xApiKey: process.env.X_API_KEY,
-    xApiSecret: process.env.X_API_SECRET,
-    xAccessToken: process.env.X_ACCESS_TOKEN,
-    xAccessSecret: process.env.X_ACCESS_SECRET,
-    facebookPageAccessToken: process.env.FACEBOOK_PAGE_ACCESS_TOKEN,
-    facebookPageId: process.env.FACEBOOK_PAGE_ID,
-    anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    adminPassword: '',
+    githubToken: '',
+    githubRepo: '',
+    githubBranch: 'main',
+    xApiKey: '',
+    xApiSecret: '',
+    xAccessToken: '',
+    xAccessSecret: '',
+    facebookPageAccessToken: '',
+    facebookPageId: '',
+    anthropicApiKey: '',
   },
   devtools: { enabled: true }
 })
