@@ -16,21 +16,6 @@ if (!update.value) {
 useHead({
   title: `${lang.value === 'es' ? (update.value?.title_es || update.value?.title) : update.value?.title} — Save Venezuela Now`
 })
-
-const bodyEn = computed(() => {
-  const body = update.value?.body
-  if (!body) return ''
-  const raw = typeof body === 'string' ? body : JSON.stringify(body)
-  return raw.split('<!-- ES -->')[0].trim()
-})
-
-const bodyEs = computed(() => {
-  const body = update.value?.body
-  if (!body) return ''
-  const raw = typeof body === 'string' ? body : JSON.stringify(body)
-  const parts = raw.split('<!-- ES -->')
-  return parts.length > 1 ? parts[1].trim() : parts[0].trim()
-})
 </script>
 
 <template>
@@ -50,7 +35,7 @@ const bodyEs = computed(() => {
       </h1>
 
       <div class="prose-content text-[1.05rem] text-ink-light leading-[1.8]">
-        <ContentRenderer :value="update" />
+        <div v-html="lang === 'es' ? update.content_es : update.content_en" />
       </div>
     </div>
   </div>

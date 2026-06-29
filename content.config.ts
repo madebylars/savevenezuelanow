@@ -12,6 +12,8 @@ export const collections = {
       published: z.boolean().default(true),
       posted_to_x: z.boolean().optional(),
       posted_to_facebook: z.boolean().optional(),
+      content_en: z.string().optional(),
+      content_es: z.string().optional(),
     })
   })
 }

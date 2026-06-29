@@ -1,5 +1,3 @@
-import TurndownService from 'turndown'
-
 interface PublishBody {
   title: string
   title_es: string
@@ -10,11 +8,6 @@ interface PublishBody {
   x_text: string
   facebook_text: string
   targets: { website: boolean; x: boolean; facebook: boolean }
-}
-
-function htmlToMarkdown(html: string): string {
-  const td = new TurndownService({ headingStyle: 'atx', bulletListMarker: '-' })
-  return td.turndown(html)
 }
 
 async function writeToGitHub(
@@ -79,23 +72,17 @@ export default defineEventHandler(async (event) => {
     try {
       if (!config.githubToken || !config.githubRepo) throw new Error('GitHub credentials not configured')
 
-      const en_md = htmlToMarkdown(content_en)
-      const es_md = htmlToMarkdown(content_es || '')
       const markdown = `---
-title: "${title.replace(/"/g, '\\"')}"
-title_es: "${(title_es || title).replace(/"/g, '\\"')}"
+title: ${JSON.stringify(title)}
+title_es: ${JSON.stringify(title_es || title)}
 date: "${date}"
 slug: "${slug}"
 published: true
 posted_to_x: ${targets.x}
 posted_to_facebook: ${targets.facebook}
+content_en: ${JSON.stringify(content_en)}
+content_es: ${JSON.stringify(content_es || '')}
 ---
-
-${en_md}
-
-<!-- ES -->
-
-${es_md}
 `
       const filename = `${date}-${slug}.md`
       await writeToGitHub(filename, markdown, config.githubToken, config.githubRepo, config.githubBranch)

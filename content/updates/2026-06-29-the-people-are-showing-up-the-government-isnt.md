@@ -6,34 +6,6 @@ slug: "the-people-are-showing-up-the-government-isnt"
 published: true
 posted_to_x: false
 posted_to_facebook: false
+content_en: "<p>Five days after twin earthquakes devastated Venezuela, ordinary citizens are still doing the work that the state won't. Volunteers arrived at collapse sites in La Guaira carrying their own shovels. Civilians from Caracas drove through the night with supplies. International rescue teams from Mexico, the US, France and El Salvador are climbing through rubble alongside them.</p><p>Meanwhile, aid has been confiscated by authorities. Access to the hardest-hit areas was restricted to \"authorised personnel.\" At one site, government officials took selfies in front of flattened buildings — then left without helping.</p><p>María Corina Machado, Venezuela's Nobel Peace Prize-winning opposition leader, is trying to return from exile to help her people. Senior US officials are reportedly blocking the move over geopolitical concerns.</p><p>A country in ruins. A government more concerned with optics than rescue. A people left to dig out their neighbours with their bare hands.</p><p>They deserve better. Donate via Direct Relief — 100% goes directly to the emergency response.</p>"
+content_es: "<p>Cinco días después de que dos terremotos devastaran Venezuela, los ciudadanos de a pie siguen haciendo el trabajo que el Estado se niega a hacer. Voluntarios llegaron a los sitios de derrumbe en La Guaira cargando sus propias palas. Civiles de Caracas manejaron toda la noche con suministros. Equipos internacionales de rescate de México, Estados Unidos, Francia y El Salvador escalan entre los escombros junto a ellos.</p><p>Mientras tanto, las autoridades han confiscado ayuda humanitaria. El acceso a las zonas más afectadas fue restringido al \"personal autorizado\". En un sitio, funcionarios del gobierno se tomaron selfies frente a edificios derrumbados — y se fueron sin ayudar a nadie.</p><p>María Corina Machado, líder opositora venezolana ganadora del Premio Nobel de la Paz, está intentando regresar del exilio para ayudar a su gente. Según se reporta, altos funcionarios del gobierno de Estados Unidos están bloqueando el regreso por razones geopolíticas.</p><p>Un país en ruinas. Un gobierno más preocupado por las apariencias que por el rescate. Un pueblo abandonado a escarbar entre los escombros con sus propias manos para sacar a sus vecinos.</p><p>Se merecen algo mejor. Dona a través de Direct Relief — el 100% va directamente a la respuesta de emergencia.</p>"
 ---
-
-Five days after twin earthquakes devastated Venezuela, ordinary citizens are still doing the work that the state won't. Volunteers arrived at collapse sites in La Guaira carrying their own shovels. Civilians from Caracas drove through the night with supplies. International rescue teams from Mexico, the US, France and El Salvador are climbing through rubble alongside them.
-
-Meanwhile, aid has been confiscated by authorities. Access to the hardest-hit areas was restricted to "authorised personnel." At one site, government officials took selfies in front of flattened buildings — then left without helping.
-
-María Corina Machado, Venezuela's Nobel Peace Prize-winning opposition leader, is trying to return from exile to help her people. Senior US officials are reportedly blocking the move over geopolitical concerns.
-
-A country in ruins. A government more concerned with optics than rescue. A people left to dig out their neighbours with their bare hands.
-
-They deserve better. Donate via Direct Relief — 100% goes directly to the emergency response.
-
-👉 [savevenezuelanow.com](http://savevenezuelanow.com)
-
-#Venezuela #VenezuelaEarthquake #MariaCorinaConVenezuela
-
-<!-- ES -->
-
-Cinco días después de que dos terremotos devastaran Venezuela, los ciudadanos de a pie siguen haciendo el trabajo que el Estado se niega a hacer. Voluntarios llegaron a los sitios de derrumbe en La Guaira cargando sus propias palas. Civiles de Caracas manejaron toda la noche con suministros. Equipos internacionales de rescate de México, Estados Unidos, Francia y El Salvador escalan entre los escombros junto a ellos.
-
-Mientras tanto, las autoridades han confiscado ayuda humanitaria. El acceso a las zonas más afectadas fue restringido al "personal autorizado". En un sitio, funcionarios del gobierno se tomaron selfies frente a edificios derrumbados — y se fueron sin ayudar a nadie.
-
-María Corina Machado, líder opositora venezolana ganadora del Premio Nobel de la Paz, está intentando regresar del exilio para ayudar a su gente. Según se reporta, altos funcionarios del gobierno de Estados Unidos están bloqueando el regreso por razones geopolíticas.
-
-Un país en ruinas. Un gobierno más preocupado por las apariencias que por el rescate. Un pueblo abandonado a escarbar entre los escombros con sus propias manos para sacar a sus vecinos.
-
-Se merecen algo mejor. Dona a través de Direct Relief — el 100% va directamente a la respuesta de emergencia.
-
-👉 [savevenezuelanow.com](http://savevenezuelanow.com)
-
-#Venezuela #VenezuelaEarthquake #MariaCorinaConVenezuela
