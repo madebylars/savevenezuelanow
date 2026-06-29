@@ -4,7 +4,14 @@ export interface GitHubCfg {
   branch: string
 }
 
-function ghHeaders(token: string) {
+function ghReadHeaders(token: string) {
+  return {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json'
+  }
+}
+
+function ghWriteHeaders(token: string) {
   return {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',
@@ -22,7 +29,7 @@ export function ghCfgFromRuntime(config: { githubToken: string; githubRepo: stri
 
 export async function getGithubFile(cfg: GitHubCfg, filePath: string): Promise<{ content: string; sha: string }> {
   const res = await $fetch<{ content: string; sha: string }>(ghUrl(cfg.repo, filePath), {
-    headers: ghHeaders(cfg.token)
+    headers: ghReadHeaders(cfg.token)
   })
   return { content: atob(res.content.replace(/\s/g, '')), sha: res.sha }
 }
@@ -31,7 +38,7 @@ export async function createGithubFile(cfg: GitHubCfg, filePath: string, content
   const encoded = btoa(unescape(encodeURIComponent(content)))
   await $fetch(ghUrl(cfg.repo, filePath), {
     method: 'PUT',
-    headers: ghHeaders(cfg.token),
+    headers: ghWriteHeaders(cfg.token),
     body: JSON.stringify({ message, content: encoded, branch: cfg.branch })
   })
 }
@@ -40,7 +47,7 @@ export async function updateGithubFile(cfg: GitHubCfg, filePath: string, content
   const encoded = btoa(unescape(encodeURIComponent(content)))
   await $fetch(ghUrl(cfg.repo, filePath), {
     method: 'PUT',
-    headers: ghHeaders(cfg.token),
+    headers: ghWriteHeaders(cfg.token),
     body: JSON.stringify({ message, content: encoded, sha, branch: cfg.branch })
   })
 }
@@ -48,7 +55,7 @@ export async function updateGithubFile(cfg: GitHubCfg, filePath: string, content
 export async function deleteGithubFile(cfg: GitHubCfg, filePath: string, sha: string, message: string): Promise<void> {
   await $fetch(ghUrl(cfg.repo, filePath), {
     method: 'DELETE',
-    headers: ghHeaders(cfg.token),
+    headers: ghWriteHeaders(cfg.token),
     body: JSON.stringify({ message, sha, branch: cfg.branch })
   })
 }
