@@ -6,18 +6,28 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Facebook credentials not configured' })
   }
 
-  const res = await $fetch<{ id: string }>(
-    `https://graph.facebook.com/v21.0/${facebookPageId}/feed`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: text,
-        link: 'https://savevenezuelanow.com'
-      }),
-      query: { access_token: facebookPageAccessToken }
-    }
-  )
+  let res: { id: string }
+  try {
+    res = await $fetch<{ id: string }>(
+      `https://graph.facebook.com/v21.0/${facebookPageId}/feed`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          link: 'https://savevenezuelanow.com'
+        }),
+        query: { access_token: facebookPageAccessToken }
+      }
+    )
+  } catch (error: unknown) {
+    const e = error as { data?: { error?: { message?: string; code?: number; error_subcode?: number } }; status?: number; statusCode?: number }
+    const fbError = e?.data?.error
+    console.error('Facebook API error:', JSON.stringify(fbError ?? e))
+    const msg = fbError?.message ?? 'Facebook API error'
+    const hint = fbError?.code === 190 ? ' (token expired — generate a new Page Access Token)' : ''
+    throw createError({ statusCode: e?.status ?? e?.statusCode ?? 500, statusMessage: msg + hint })
+  }
 
   return {
     success: true,
