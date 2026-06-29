@@ -29,8 +29,14 @@ export default defineEventHandler(async (event) => {
   const cfg = ghCfgFromRuntime(config)
   const filePath = `content/updates/${stem}.md`
 
-  const { sha } = await getGithubFile(cfg, filePath).catch(() => {
-    throw createError({ statusCode: 404, statusMessage: 'File not found on GitHub' })
+  const { sha } = await getGithubFile(cfg, filePath).catch((e: unknown) => {
+    const status = (e as { status?: number; statusCode?: number }).status
+      ?? (e as { status?: number; statusCode?: number }).statusCode
+      ?? 0
+    if (status === 401 || status === 403) {
+      throw createError({ statusCode: 500, statusMessage: 'GitHub token lacks Contents: Read permission — update your fine-grained PAT' })
+    }
+    throw createError({ statusCode: 404, statusMessage: `File not found on GitHub: ${filePath}` })
   })
 
   const markdown = `---
