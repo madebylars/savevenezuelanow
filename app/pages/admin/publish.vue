@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'admin', layout: false })
+definePageMeta({ middleware: 'admin', layout: 'admin' })
 
 const activeTab = ref<'en' | 'es'>('en')
 
@@ -95,15 +95,8 @@ const xCharClass = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-ink text-white">
-    <header class="border-b border-white/[0.08] px-8 py-5 flex items-center justify-between">
-      <div class="flex items-center gap-6">
-        <NuxtLink to="/admin" class="text-white/45 hover:text-white text-sm no-underline transition-colors">← Dashboard</NuxtLink>
-        <span class="font-serif text-accent uppercase tracking-[0.05em] text-sm">Publish Update</span>
-      </div>
-    </header>
-
-    <main class="max-w-[900px] mx-auto px-8 py-10">
+  <main class="max-w-225 mx-auto px-8 py-10">
+    <h1 class="font-serif text-2xl text-white mb-8">New update</h1>
 
       <!-- Titles -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -307,6 +300,5 @@ const xCharClass = computed(() => {
         <div v-else class="text-primary">{{ publishResult.error }}</div>
       </div>
 
-    </main>
-  </div>
+  </main>
 </template>

@@ -10,45 +10,19 @@ interface PublishBody {
   targets: { website: boolean; x: boolean; facebook: boolean }
 }
 
-async function writeToGitHub(
-  filename: string,
-  markdownContent: string,
-  token: string,
-  repo: string,
-  branch: string
-): Promise<void> {
-  const path = `content/updates/${filename}`
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`
-  const encoded = btoa(unescape(encodeURIComponent(markdownContent)))
-
-  // Check if file exists to get its SHA (needed for updates)
-  let sha: string | undefined
-  try {
-    const existing = await $fetch<{ sha: string }>(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/vnd.github+json'
-      }
-    })
-    sha = existing.sha
-  } catch {
-    // File doesn't exist yet — fine
-  }
-
-  await $fetch(apiUrl, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: `Add update: ${filename}`,
-      content: encoded,
-      branch,
-      ...(sha ? { sha } : {})
-    })
-  })
+function buildMarkdown(body: PublishBody): string {
+  return `---
+title: ${JSON.stringify(body.title)}
+title_es: ${JSON.stringify(body.title_es || body.title)}
+date: "${body.date}"
+slug: "${body.slug}"
+published: true
+posted_to_x: ${body.targets.x}
+posted_to_facebook: ${body.targets.facebook}
+content_en: ${JSON.stringify(body.content_en)}
+content_es: ${JSON.stringify(body.content_es || '')}
+---
+`
 }
 
 export default defineEventHandler(async (event) => {
@@ -59,33 +33,36 @@ export default defineEventHandler(async (event) => {
 
   const config = useRuntimeConfig(event)
   const body = await readBody<PublishBody>(event)
-  const { title, title_es, slug, date, content_en, content_es, x_text, facebook_text, targets } = body
+  const { title, content_en, slug } = body
 
   if (!title || !content_en || !slug) {
     throw createError({ statusCode: 400, statusMessage: 'Missing required fields' })
   }
 
+  const cfg = ghCfgFromRuntime(config)
   const results: Record<string, unknown> = {}
 
   // 1. Write to GitHub → triggers Cloudflare Pages redeploy
-  if (targets.website) {
+  if (body.targets.website) {
     try {
       if (!config.githubToken || !config.githubRepo) throw new Error('GitHub credentials not configured')
 
-      const markdown = `---
-title: ${JSON.stringify(title)}
-title_es: ${JSON.stringify(title_es || title)}
-date: "${date}"
-slug: "${slug}"
-published: true
-posted_to_x: ${targets.x}
-posted_to_facebook: ${targets.facebook}
-content_en: ${JSON.stringify(content_en)}
-content_es: ${JSON.stringify(content_es || '')}
----
-`
-      const filename = `${date}-${slug}.md`
-      await writeToGitHub(filename, markdown, config.githubToken, config.githubRepo, config.githubBranch)
+      const filename = `${body.date}-${slug}.md`
+      const filePath = `content/updates/${filename}`
+      const markdown = buildMarkdown(body)
+
+      let sha: string | undefined
+      try {
+        const existing = await getGithubFile(cfg, filePath)
+        sha = existing.sha
+      } catch { /* new file */ }
+
+      if (sha) {
+        await updateGithubFile(cfg, filePath, markdown, sha, `Update: ${filename}`)
+      } else {
+        await createGithubFile(cfg, filePath, markdown, `Add update: ${filename}`)
+      }
+
       results.website = { success: true, file: filename }
     } catch (e) {
       results.website = { success: false, error: (e as Error).message }
@@ -93,9 +70,9 @@ content_es: ${JSON.stringify(content_es || '')}
   }
 
   // 2. Post to X
-  if (targets.x && x_text) {
+  if (body.targets.x && body.x_text) {
     try {
-      const xResult = await $fetch('/api/x', { method: 'POST', body: { text: x_text } })
+      const xResult = await $fetch('/api/x', { method: 'POST', body: { text: body.x_text } })
       results.x = xResult
     } catch (e) {
       results.x = { success: false, error: (e as Error).message }
@@ -103,9 +80,9 @@ content_es: ${JSON.stringify(content_es || '')}
   }
 
   // 3. Post to Facebook
-  if (targets.facebook && facebook_text) {
+  if (body.targets.facebook && body.facebook_text) {
     try {
-      const fbResult = await $fetch('/api/facebook', { method: 'POST', body: { text: facebook_text } })
+      const fbResult = await $fetch('/api/facebook', { method: 'POST', body: { text: body.facebook_text } })
       results.facebook = fbResult
     } catch (e) {
       results.facebook = { success: false, error: (e as Error).message }
