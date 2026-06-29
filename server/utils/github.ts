@@ -4,17 +4,22 @@ export interface GitHubCfg {
   branch: string
 }
 
-function ghReadHeaders(token: string) {
+function ghBaseHeaders(token: string) {
   return {
     Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json'
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'User-Agent': 'savevenezuelanow/1.0'
   }
+}
+
+function ghReadHeaders(token: string) {
+  return ghBaseHeaders(token)
 }
 
 function ghWriteHeaders(token: string) {
   return {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
+    ...ghBaseHeaders(token),
     'Content-Type': 'application/json'
   }
 }
