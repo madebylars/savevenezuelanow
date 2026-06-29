@@ -7,6 +7,11 @@ export default defineNuxtConfig({
     preset: process.env.NODE_ENV === 'production' ? 'cloudflare-pages' : undefined
   },
   modules: ['@nuxt/content'],
+  content: {
+    database: process.env.NODE_ENV === 'production'
+      ? { type: 'd1' as const, binding: 'DB' }
+      : undefined
+  },
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()]
