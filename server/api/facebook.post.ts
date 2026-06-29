@@ -1,15 +1,13 @@
 export default defineEventHandler(async (event) => {
   const { text } = await readBody<{ text: string }>(event)
+  const { facebookPageAccessToken, facebookPageId } = useRuntimeConfig(event)
 
-  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN
-  const pageId = process.env.FACEBOOK_PAGE_ID
-
-  if (!token || !pageId) {
+  if (!facebookPageAccessToken || !facebookPageId) {
     throw createError({ statusCode: 500, statusMessage: 'Facebook credentials not configured' })
   }
 
   const res = await $fetch<{ id: string }>(
-    `https://graph.facebook.com/v21.0/${pageId}/feed`,
+    `https://graph.facebook.com/v21.0/${facebookPageId}/feed`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -17,7 +15,7 @@ export default defineEventHandler(async (event) => {
         message: text,
         link: 'https://savevenezuelanow.com'
       }),
-      query: { access_token: token }
+      query: { access_token: facebookPageAccessToken }
     }
   )
 

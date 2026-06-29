@@ -17,13 +17,13 @@ function htmlToMarkdown(html: string): string {
   return td.turndown(html)
 }
 
-async function writeToGitHub(filename: string, markdownContent: string): Promise<void> {
-  const token = process.env.GITHUB_TOKEN
-  const repo = process.env.GITHUB_REPO
-  const branch = process.env.GITHUB_BRANCH ?? 'main'
-
-  if (!token || !repo) throw new Error('GitHub credentials not configured')
-
+async function writeToGitHub(
+  filename: string,
+  markdownContent: string,
+  token: string,
+  repo: string,
+  branch: string
+): Promise<void> {
   const path = `content/updates/${filename}`
   const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`
   const encoded = btoa(unescape(encodeURIComponent(markdownContent)))
@@ -39,7 +39,7 @@ async function writeToGitHub(filename: string, markdownContent: string): Promise
     })
     sha = existing.sha
   } catch {
-    // File doesn't exist yet — that's fine
+    // File doesn't exist yet — fine
   }
 
   await $fetch(apiUrl, {
@@ -59,12 +59,12 @@ async function writeToGitHub(filename: string, markdownContent: string): Promise
 }
 
 export default defineEventHandler(async (event) => {
-  // Auth check
   const cookies = parseCookies(event)
   if (!cookies.adminAuth) {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
   }
 
+  const config = useRuntimeConfig(event)
   const body = await readBody<PublishBody>(event)
   const { title, title_es, slug, date, content_en, content_es, x_text, facebook_text, targets } = body
 
@@ -74,12 +74,13 @@ export default defineEventHandler(async (event) => {
 
   const results: Record<string, unknown> = {}
 
-  // 1. Write to GitHub (triggers Cloudflare Pages redeploy)
+  // 1. Write to GitHub → triggers Cloudflare Pages redeploy
   if (targets.website) {
     try {
+      if (!config.githubToken || !config.githubRepo) throw new Error('GitHub credentials not configured')
+
       const en_md = htmlToMarkdown(content_en)
       const es_md = htmlToMarkdown(content_es || '')
-
       const markdown = `---
 title: "${title.replace(/"/g, '\\"')}"
 title_es: "${(title_es || title).replace(/"/g, '\\"')}"
@@ -97,7 +98,7 @@ ${en_md}
 ${es_md}
 `
       const filename = `${date}-${slug}.md`
-      await writeToGitHub(filename, markdown)
+      await writeToGitHub(filename, markdown, config.githubToken, config.githubRepo, config.githubBranch)
       results.website = { success: true, file: filename }
     } catch (e) {
       results.website = { success: false, error: (e as Error).message }
@@ -107,10 +108,7 @@ ${es_md}
   // 2. Post to X
   if (targets.x && x_text) {
     try {
-      const xResult = await $fetch('/api/x', {
-        method: 'POST',
-        body: { text: x_text }
-      })
+      const xResult = await $fetch('/api/x', { method: 'POST', body: { text: x_text } })
       results.x = xResult
     } catch (e) {
       results.x = { success: false, error: (e as Error).message }
@@ -120,10 +118,7 @@ ${es_md}
   // 3. Post to Facebook
   if (targets.facebook && facebook_text) {
     try {
-      const fbResult = await $fetch('/api/facebook', {
-        method: 'POST',
-        body: { text: facebook_text }
-      })
+      const fbResult = await $fetch('/api/facebook', { method: 'POST', body: { text: facebook_text } })
       results.facebook = fbResult
     } catch (e) {
       results.facebook = { success: false, error: (e as Error).message }

@@ -1,8 +1,8 @@
 export default defineEventHandler(async (event) => {
   const { title, content } = await readBody<{ title: string; content: string }>(event)
+  const { anthropicApiKey } = useRuntimeConfig(event)
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) throw createError({ statusCode: 500, statusMessage: 'ANTHROPIC_API_KEY not configured' })
+  if (!anthropicApiKey) throw createError({ statusCode: 500, statusMessage: 'ANTHROPIC_API_KEY not configured' })
 
   if (!title && !content) {
     throw createError({ statusCode: 400, statusMessage: 'Title or content required' })
@@ -26,7 +26,7 @@ Content to translate: ${content}`
   }>('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
-      'x-api-key': apiKey,
+      'x-api-key': anthropicApiKey,
       'anthropic-version': '2023-06-01',
       'content-type': 'application/json'
     },
@@ -38,7 +38,6 @@ Content to translate: ${content}`
   })
 
   const raw = (res.content[0]?.text ?? '{}').trim()
-  // Strip markdown code fences if Claude wraps the JSON
   const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
 
   try {

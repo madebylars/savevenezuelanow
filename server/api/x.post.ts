@@ -43,12 +43,13 @@ async function oauthSign(
 
 export default defineEventHandler(async (event) => {
   const { text } = await readBody<{ text: string }>(event)
+  const { xApiKey, xApiSecret, xAccessToken, xAccessSecret } = useRuntimeConfig(event)
 
   const creds = {
-    apiKey: process.env.X_API_KEY ?? '',
-    apiSecret: process.env.X_API_SECRET ?? '',
-    accessToken: process.env.X_ACCESS_TOKEN ?? '',
-    accessSecret: process.env.X_ACCESS_SECRET ?? ''
+    apiKey: xApiKey ?? '',
+    apiSecret: xApiSecret ?? '',
+    accessToken: xAccessToken ?? '',
+    accessSecret: xAccessSecret ?? ''
   }
 
   if (!creds.apiKey) throw createError({ statusCode: 500, statusMessage: 'X credentials not configured' })
@@ -58,7 +59,6 @@ export default defineEventHandler(async (event) => {
     : `${text} 👉 savevenezuelanow.com`.substring(0, 280)
 
   const url = 'https://api.twitter.com/2/tweets'
-  const body = { text: postText }
   const authHeader = await oauthSign('POST', url, {}, creds)
 
   const res = await $fetch<{ data: { id: string; text: string } }>(url, {
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
       Authorization: authHeader,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ text: postText })
   })
 
   return {

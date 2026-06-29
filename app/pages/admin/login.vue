@@ -16,8 +16,9 @@ async function login() {
     const cookie = useCookie('adminAuth', { maxAge: 60 * 60 * 8 })
     cookie.value = 'true'
     await navigateTo('/admin')
-  } catch {
-    error.value = 'Incorrect password.'
+  } catch (e: unknown) {
+    const msg = (e as { statusMessage?: string; data?: { message?: string } })
+    error.value = msg?.data?.message || msg?.statusMessage || 'Incorrect password.'
   } finally {
     loading.value = false
   }
