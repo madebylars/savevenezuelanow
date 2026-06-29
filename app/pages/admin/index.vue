@@ -1,12 +1,19 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'admin', layout: 'admin' })
 
-const { data: updatesData } = await useAsyncData('admin-updates', () =>
+const { data: updatesData, refresh } = await useAsyncData('admin-updates', () =>
   queryCollection('updates').order('date', 'DESC').all()
 )
 
 const updates = ref(updatesData.value ?? [])
 watch(updatesData, val => { updates.value = val ?? [] })
+
+const loading = ref(false)
+onMounted(async () => {
+  loading.value = true
+  await refresh()
+  loading.value = false
+})
 
 // ── Delete modal ──────────────────────────────────────────────────────────────
 const deleteTarget = ref<{ stem: string; title: string } | null>(null)
@@ -56,7 +63,9 @@ function showToast(message: string, type: 'success' | 'error' = 'success') {
       >+ New update</NuxtLink>
     </div>
 
-    <div v-if="updates.length" class="flex flex-col gap-px bg-white/5">
+    <div v-if="loading" class="text-white/40 text-sm py-4">Loading…</div>
+
+    <div v-else-if="updates.length" class="flex flex-col gap-px bg-white/5">
       <div
         v-for="update in updates"
         :key="update.path"
@@ -87,7 +96,7 @@ function showToast(message: string, type: 'success' | 'error' = 'success') {
       </div>
     </div>
 
-    <p v-else class="text-white/40 text-sm">No updates yet.</p>
+    <p v-else class="text-white/40 text-sm py-4">No updates yet.</p>
   </main>
 
   <!-- Delete confirmation modal -->
