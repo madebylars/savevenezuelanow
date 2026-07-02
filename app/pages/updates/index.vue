@@ -13,7 +13,7 @@ const { data: updates } = await useAsyncData('updates', () =>
 
 <template>
   <div class="min-h-screen bg-paper">
-    <div class="max-w-[860px] mx-auto px-8 py-16">
+    <div class="max-w-215 mx-auto px-8 py-16">
       <div class="text-[0.68rem] tracking-[0.14em] uppercase text-muted mb-4 flex items-center gap-[0.6rem] before:block before:w-6 before:h-px before:bg-muted">
         {{ t('News & Updates', 'Noticias y Actualizaciones') }}
       </div>

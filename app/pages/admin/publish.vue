@@ -93,7 +93,7 @@ async function publish() {
       <!-- Titles -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">Title (EN)</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">Title (EN)</label>
           <input
             v-model="form.title"
             type="text"
@@ -102,7 +102,7 @@ async function publish() {
           />
         </div>
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">Title (ES)</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">Title (ES)</label>
           <input
             v-model="form.title_es"
             type="text"
@@ -115,7 +115,7 @@ async function publish() {
       <!-- Slug + Date -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">Slug</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">Slug</label>
           <input
             v-model="form.slug"
             type="text"
@@ -123,7 +123,7 @@ async function publish() {
           />
         </div>
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">Date</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">Date</label>
           <input
             v-model="form.date"
             type="date"
@@ -142,7 +142,7 @@ async function publish() {
               :key="tab"
               @click="activeTab = tab"
               :class="[
-                'px-5 py-2 text-xs font-semibold tracking-[0.1em] uppercase transition-colors cursor-pointer border-0',
+                'px-5 py-2 text-xs font-semibold tracking-widest uppercase transition-colors cursor-pointer border-0',
                 activeTab === tab ? 'bg-primary text-white' : 'bg-white/10 text-white/50 hover:text-white'
               ]"
               type="button"
@@ -225,7 +225,7 @@ async function publish() {
       <!-- Social text fields -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">X post text</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">X post text</label>
           <textarea
             v-model="form.x_text"
             rows="4"
@@ -234,7 +234,7 @@ async function publish() {
           />
         </div>
         <div>
-          <label class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 block mb-2">Facebook post text</label>
+          <label class="text-[0.72rem] uppercase tracking-widest text-white/40 block mb-2">Facebook post text</label>
           <textarea
             v-model="form.facebook_text"
             rows="4"
@@ -246,7 +246,7 @@ async function publish() {
 
       <!-- Targets -->
       <div class="mb-8">
-        <div class="text-[0.72rem] uppercase tracking-[0.1em] text-white/40 mb-3">Publish to</div>
+        <div class="text-[0.72rem] uppercase tracking-widest text-white/40 mb-3">Publish to</div>
         <div class="flex flex-wrap gap-4">
           <label
             v-for="(label, key) in { website: 'Website', x: 'X (@InfoSaveVen)', facebook: 'Facebook (InfoSaveVen)' }"

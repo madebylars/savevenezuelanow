@@ -306,6 +306,94 @@ ANTHROPIC_API_KEY=        # Anthropic API key for translation
 
 ---
 
+
+---
+
+## Documented Pitfalls
+
+### ❌ Do not use `process.env` in `nuxt.config.ts` runtimeConfig
+
+**Wrong:**
+```ts
+runtimeConfig: {
+  githubToken: process.env.GITHUB_TOKEN,
+}
+```
+
+**Correct:**
+```ts
+runtimeConfig: {
+  githubToken: '',
+}
+```
+
+Nuxt 4 automatically maps `NUXT_`-prefixed environment variables to runtimeConfig keys at runtime. Setting `process.env` values directly in `nuxt.config.ts` breaks this on Cloudflare Workers where `process.env` is not available at build time.
+
+All env vars must use the `NUXT_` prefix:
+```bash
+NUXT_GITHUB_TOKEN=github_pat_xxxxx
+NUXT_ADMIN_PASSWORD=yourpassword
+NUXT_ANTHROPIC_API_KEY=sk-ant-xxxxx
+# etc.
+```
+
+Access in server routes always via:
+```ts
+const config = useRuntimeConfig()
+const token = config.githubToken
+```
+
+Never via `process.env.GITHUB_TOKEN` directly in server routes.
+
+### ❌ Do not use `<!-- ES -->` body divider for bilingual content
+
+Nuxt Content v3 returns `body` as a parsed AST object, not a raw string. Splitting on `<!-- ES -->` does not work reliably.
+
+**Correct approach:** Store bilingual content as HTML strings in frontmatter fields:
+```yaml
+---
+content_en: "<p>English content</p>"
+content_es: "<p>Contenido en español</p>"
+---
+```
+
+Render with `v-html`:
+```vue
+<div v-html="lang === 'es' ? update.content_es : update.content_en" />
+```
+
+### ❌ Do not use `<ContentRenderer>` for bilingual updates
+
+`<ContentRenderer :value="update" />` renders the entire raw body and ignores the language selection. Use `v-html` with the frontmatter `content_en` / `content_es` fields instead.
+
+
+### ❌ Cloudflare Workers do not send a User-Agent header on outbound requests
+
+GitHub's API (and many other APIs) require a `User-Agent` header and will return 403 if it is missing. Cloudflare Workers strip or omit the User-Agent on outbound `$fetch` calls — it must always be set explicitly.
+
+Always include these headers on every GitHub API call:
+
+```ts
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  'Accept': 'application/vnd.github+json',
+  'X-GitHub-Api-Version': '2022-11-28',
+  'User-Agent': 'savevenezuelanow/1.0'
+}
+```
+
+This applies to any third party API called from a Cloudflare Worker — not just GitHub. When an outbound API call returns an unexpected 403, missing User-Agent is the first thing to check.
+
+### ❌ Do not use `localStorage` anywhere
+
+Cloudflare Workers do not support browser storage APIs. Use cookies for all persistent state (language preference, admin auth).
+
+### ❌ Do not use Node.js `fs` module in server routes
+
+Cloudflare Workers have no filesystem access. All file operations (reading, writing, deleting content files) must go through the GitHub API using the helpers in `server/utils/github.ts`.
+
+---
+
 ## Out of Scope (for now)
 
 - Comments or user-generated content

@@ -20,7 +20,7 @@ useHead({
 
 <template>
   <div class="min-h-screen bg-paper" v-if="update">
-    <div class="max-w-[720px] mx-auto px-8 py-16">
+    <div class="max-w-180 mx-auto px-8 py-16">
       <NuxtLink
         to="/updates"
         class="text-[0.8rem] tracking-wide text-muted hover:text-primary no-underline transition-colors mb-8 block"

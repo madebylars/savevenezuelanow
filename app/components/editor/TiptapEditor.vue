@@ -98,7 +98,7 @@ function isActive(name: string, attrs?: Record<string, unknown>) {
     <!-- Editor -->
     <EditorContent
       :editor="editor"
-      class="min-h-[180px] p-4 text-white/90 focus-within:outline-none tiptap-content"
+      class="min-h-45 p-4 text-white/90 focus-within:outline-none tiptap-content"
     />
 
     <!-- Char count -->

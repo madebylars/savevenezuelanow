@@ -28,7 +28,7 @@ async function login() {
 <template>
   <div class="min-h-screen bg-ink flex items-center justify-center px-4">
     <div class="w-full max-w-sm">
-      <div class="font-serif text-accent uppercase tracking-[0.05em] text-base mb-8 text-center">
+      <div class="font-serif text-accent uppercase tracking-wider text-base mb-8 text-center">
         Save Venezuela Now
       </div>
       <h1 class="font-serif text-white text-2xl mb-8 text-center">Admin Access</h1>
