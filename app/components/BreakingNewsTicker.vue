@@ -15,13 +15,13 @@ const { data: latestUpdate } = await useAsyncData('latest-update', () =>
 const headline = computed(() => {
   if (!latestUpdate.value) return ''
   return lang.value === 'es'
-    ? (latestUpdate.value as Record<string, unknown>).title_es as string || latestUpdate.value.title
+    ? latestUpdate.value.title_es || latestUpdate.value.title
     : latestUpdate.value.title
 })
 
 const updateSlug = computed(() =>
   latestUpdate.value?.path?.split('/').pop()
-    ?? (latestUpdate.value as Record<string, unknown>)?.slug as string
+    ?? latestUpdate.value?.slug
     ?? ''
 )
 

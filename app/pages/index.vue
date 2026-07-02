@@ -11,21 +11,22 @@ const { data: latestUpdate } = await useAsyncData('latest-update', () =>
 
 const latestExcerpt = computed(() => {
   const raw = lang.value === 'es'
-    ? (latestUpdate.value as Record<string, unknown>)?.content_es as string
-    : (latestUpdate.value as Record<string, unknown>)?.content_en as string
-  return raw?.replace(/<[^>]*>/g, '').slice(0, 200) + '...' ?? ''
+    ? latestUpdate.value?.content_es
+    : latestUpdate.value?.content_en
+  if (!raw) return ''
+  return raw.replace(/<[^>]*>/g, '').slice(0, 200) + '...'
 })
 
 const latestTitle = computed(() => {
   if (!latestUpdate.value) return ''
   return lang.value === 'es'
-    ? (latestUpdate.value as Record<string, unknown>).title_es as string || latestUpdate.value.title
+    ? latestUpdate.value.title_es || latestUpdate.value.title
     : latestUpdate.value.title
 })
 
 const latestSlug = computed(() =>
   latestUpdate.value?.path?.split('/').pop()
-    ?? (latestUpdate.value as Record<string, unknown>)?.slug as string
+    ?? latestUpdate.value?.slug
     ?? ''
 )
 
