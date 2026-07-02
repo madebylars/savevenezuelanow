@@ -96,6 +96,32 @@ const diasporaCountries = computed(() => [
   <!-- Hero -->
   <HeroSection :stats="stats" />
 
+  <!-- Latest Update -->
+  <section v-if="latestUpdate" class="py-16 px-8 bg-white">
+    <div class="max-w-215 mx-auto">
+      <div class="border-l-[3px] border-primary bg-paper px-8 py-7">
+        <div class="flex items-baseline justify-between mb-5">
+          <div class="text-[0.68rem] tracking-[0.14em] uppercase text-muted flex items-center gap-[0.6rem] before:block before:w-6 before:h-px before:bg-muted">
+            {{ t('Latest update', 'Última actualización') }}
+          </div>
+          <span class="text-[0.78rem] text-muted">{{ latestDate }}</span>
+        </div>
+        <h2 class="font-serif text-[clamp(1.3rem,3vw,1.8rem)] leading-tight mb-3 text-ink">
+          {{ latestTitle }}
+        </h2>
+        <p class="text-[0.95rem] text-ink-light leading-[1.75] mb-5 max-w-165">
+          {{ latestExcerpt }}
+        </p>
+        <NuxtLink
+          :to="`/updates/${latestSlug}`"
+          class="inline-flex items-center gap-[0.4rem] text-primary text-[0.9rem] font-semibold no-underline hover:gap-[0.7rem] transition-all"
+        >
+          {{ t('Read full update', 'Leer actualización completa') }} →
+        </NuxtLink>
+      </div>
+    </div>
+  </section>
+
   <!-- What Happened -->
   <section class="py-20 px-8 bg-white">
     <div class="max-w-215 mx-auto">
@@ -139,32 +165,6 @@ const diasporaCountries = computed(() => [
           'El principal aeropuerto internacional de Venezuela fue cerrado tras encontrarse daños estructurales en el techo de la terminal. Las escuelas cerraron. Los hospitales — ya escasos de equipos y personal — fueron desbordados por pacientes traumatizados. Se espera que el número de muertos aumente significativamente.'
         ) }}
       </p>
-    </div>
-  </section>
-
-  <!-- Latest Update -->
-  <section v-if="latestUpdate" class="py-16 px-8 bg-white">
-    <div class="max-w-215 mx-auto">
-      <div class="border-l-[3px] border-primary bg-paper px-8 py-7">
-        <div class="flex items-baseline justify-between mb-5">
-          <div class="text-[0.68rem] tracking-[0.14em] uppercase text-muted flex items-center gap-[0.6rem] before:block before:w-6 before:h-px before:bg-muted">
-            {{ t('Latest update', 'Última actualización') }}
-          </div>
-          <span class="text-[0.78rem] text-muted">{{ latestDate }}</span>
-        </div>
-        <h2 class="font-serif text-[clamp(1.3rem,3vw,1.8rem)] leading-tight mb-3 text-ink">
-          {{ latestTitle }}
-        </h2>
-        <p class="text-[0.95rem] text-ink-light leading-[1.75] mb-5 max-w-165">
-          {{ latestExcerpt }}
-        </p>
-        <NuxtLink
-          :to="`/updates/${latestSlug}`"
-          class="inline-flex items-center gap-[0.4rem] text-primary text-[0.9rem] font-semibold no-underline hover:gap-[0.7rem] transition-all"
-        >
-          {{ t('Read full update', 'Leer actualización completa') }} →
-        </NuxtLink>
-      </div>
     </div>
   </section>
 
