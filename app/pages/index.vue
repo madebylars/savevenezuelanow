@@ -76,8 +76,8 @@ const contextCards = computed(() => [
 ])
 
 const stats = computed(() => [
-  { num: '5,200+', label: t('Confirmed dead', 'Muertos confirmados') },
-  { num: '16,700+', label: t('Injured', 'Heridos') },
+  { num: '6,125+', label: t('Confirmed dead', 'Muertos confirmados') },
+  { num: '61,000+', label: t('Injured', 'Heridos') },
   { num: '50,000+', label: t('Missing', 'Desaparecidos') },
   { num: 'Mw 7.5', label: t('Strongest since 1900', 'El más fuerte desde 1900') }
 ])
